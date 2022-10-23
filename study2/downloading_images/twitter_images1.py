@@ -64,8 +64,14 @@ for p in file_paths_1[1:522]:
 
 
 flat_image_links = list(np.concatenate(image_links))
+#flat_image_sets = set(np.concatenate(image_links))
+#new_set = {}
 
-
+#for link in flat_image_set:
+ #   if link not in flat_image_set:
+  #      new_set.append(link)
+   # else:
+    #    pass
 # In[6]:
 
 
