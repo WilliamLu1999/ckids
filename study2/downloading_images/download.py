@@ -5,6 +5,9 @@ import os
 import glob
 
 file_paths=[]
+path_2022_02 = "/project/ll_774_951/uk_ru/twitter/data/2022-02/*.csv"
+for fname in glob.glob(path_2022_02):
+    file_paths.append(fname)
 path_2022_03 = "/project/ll_774_951/uk_ru/twitter/data/2022-03/*.csv"
 for fname in glob.glob(path_2022_03):
     file_paths.append(fname)
@@ -12,9 +15,10 @@ path_2022_04 = "/project/ll_774_951/uk_ru/twitter/data/2022-04/*.csv"
 for fname in glob.glob(path_2022_04):
     file_paths.append(fname)
 file_paths.sort()
-file_paths_1 = file_paths[358:458]
+#file_paths_1 = file_paths[358:458]
+url_set = {}
 
-for file in file_paths_1:
+for file in file_paths:
     df = pd.read_csv(file,  engine='python', error_bad_lines=False)
     
     media_urls = df[['media_urls']]
@@ -36,7 +40,10 @@ for file in file_paths_1:
     
     for link in downloads_1:
         try:
-            urllib.request.urlretrieve(link, "/project/ll_774_951/uk_ru/twitter/twitter_images/" + os.path.basename(link))
+            url_set = url_set.append(link)
+            for url in url_set:
+                if url not in url_set:
+                    urllib.request.urlretrieve(link, "/project/ll_774_951/uk_ru/twitter/twitter_images/" + os.path.basename(link))
         except:
             pass
     
