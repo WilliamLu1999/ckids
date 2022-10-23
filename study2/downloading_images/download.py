@@ -16,7 +16,7 @@ for fname in glob.glob(path_2022_04):
     file_paths.append(fname)
 file_paths.sort()
 #file_paths_1 = file_paths[358:458]
-url_set = {}
+#url_set = {}
 
 for file in file_paths:
     df = pd.read_csv(file,  engine='python', error_bad_lines=False)
@@ -38,6 +38,16 @@ for file in file_paths:
     downloads_2 = [''.join(x for x in string if not x in special_char) for string in download_list_2]
     downloads_3 = [''.join(x for x in string if not x in special_char) for string in download_list_3]
     
+    downloads_all = downloads_1+downloads_2+downloads_3
+    downloads_all_set = set(downloads_all)
+    
+    for url in downloads_all_set:
+            try:
+                urllib.request.urlretrieve(link, "/project/ll_774_951/uk_ru/twitter/twitter_images/" + os.path.basename(link))
+            except:
+                pass
+        
+'''  
     for link in downloads_1:
         try:
             url_set = url_set.append(link)
@@ -58,3 +68,5 @@ for file in file_paths:
             urllib.request.urlretrieve(link, "/project/ll_774_951/uk_ru/twitter/twitter_images/" + os.path.basename(link))
         except:
             pass
+            
+'''
