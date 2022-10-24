@@ -4,6 +4,8 @@ import urllib.request
 import os
 import glob
 import os.path
+import csv 
+
 file_paths=[]
 path_2022_02 = "/project/ll_774_951/uk_ru/twitter/data/2022-02/*.csv"
 for fname in glob.glob(path_2022_02):
@@ -45,14 +47,27 @@ downloads_all = downloads_1+downloads_2+downloads_3
     
 downloads_all_set = set(downloads_all)
     
-print(len(downloads_all_set))
 
+filename = "downloaded_url.csv"\
+header = ['url']
+with open(filename, 'w', newline="") as file:
+    csvwriter = csv.writer(file)
+    csvwriter.writerow(header) 
+            
+      
 for url in downloads_all_set:
     try:
-        if url not in set.txt:
-            
+  
+        df_2 = pd.read_csv(filename)
+        downloaded_url = df_2['url'].values.tolist()
+        
+        if url not in downloaded_url:
             urllib.request.urlretrieve(url, "/project/ll_774_951/uk_ru/twitter/twitter_images/" + os.path.basename(url))
             # add url to the txt file
+        else:
+            with open(filename, 'w', newline="") as file:
+                csvwriter = csv.writer(file) # 2. create a csvwriter object
+                csvwriter.writerows(url) # 5. write the rest of the data
     except:
         pass
         
