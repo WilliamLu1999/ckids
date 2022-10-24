@@ -60,14 +60,16 @@ for url in downloads_all_set:
   
         df_2 = pd.read_csv(filename)
         downloaded_url = df_2['url'].values.tolist()
+        new_url_list = []
         
         if url not in downloaded_url:
             urllib.request.urlretrieve(url, "/project/ll_774_951/uk_ru/twitter/twitter_images/" + os.path.basename(url))
+            new_url_list = new_url_list.append(url)
             # add url to the txt file
-        else:
             with open(filename, 'w', newline="") as file:
                 csvwriter = csv.writer(file) # 2. create a csvwriter object
-                csvwriter.writerows(url) # 5. write the rest of the data
+                csvwriter.writerows(new_url_list) # 5. write the rest of the data
+            
     except:
         pass
         
