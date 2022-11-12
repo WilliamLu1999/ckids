@@ -27,9 +27,9 @@ import matplotlib.pyplot as plt
 # In[2]:
 
 
-img_files = os.listdir('/Users/yao/Desktop/detection/training_set/')         # 改
+img_files = os.listdir('/Users/William/Downloads/detection/training_set/')         # 改
 img_files = list(filter(lambda x: x != 'training_set', img_files))
-def train_path(p): return f"/Users/yao/Desktop/detection/training_set/{p}"
+def train_path(p): return f"/Users/William/Downloads/detection/training_set/{p}"
 img_files = list(map(train_path, img_files))
 
 print("total training images", len(img_files))
@@ -196,9 +196,9 @@ for epoch in range(epoches):
 # In[15]:
 
 
-test_files = os.listdir('/Users/yao/Desktop/detection/test_set/')
+test_files = os.listdir('/Users/William/Downloads/detection/test_set/')
 test_files = list(filter(lambda x: x != 'test_set', test_files))
-def test_path(p): return f"/Users/yao/Desktop/detection/test_set/{p}"
+def test_path(p): return f"/Users/William/Downloads/detection/test_set/{p}"
 test_files = list(map(test_path, test_files))
 
 class Test(Dataset):
@@ -219,7 +219,7 @@ class Test(Dataset):
 
 test_ds = Test(test_files, transform)
 test_dl = DataLoader(test_ds, batch_size=100)
-len(test_ds), len(test_dl)
+#len(test_ds), len(test_dl)
 
 
 # In[16]:
@@ -249,7 +249,44 @@ for img, probs in zip(test_files[:5], screenshot_probs[:5]):
 
 
 # In[ ]:
+target_names = ['Screenshot', 'Non-Screenshot']
+test_loss, test_acc = model.evaluate(test_files,  target_names, verbose=2)
+print(test_acc)
 
 
 
+# confusion matrix
+def get_all_preds(model, loader):
+    all_preds = torch.tensor([])
+    model.eval() # set model to evaluate mode
+    
+    for images, labels in loader:
+        images = images.to(device)
+        labels = labels.to(device)
+        preds = model(images)
+        all_preds = torch.cat((all_preds, preds), dim=0)
+    
+    return all_preds 
 
+with torch.no_grad(): # disable gradient computations 
+    train_preds = get_all_preds(model, train_dl)
+    # print(train_preds.shape) # (6000,10) 
+    # print(train_preds.requires_grad) # False
+
+print('true labels: ', train_set.targets.numpy())
+print('pred labels: ', train_preds.argmax(dim=1).numpy())
+
+stacked = torch.stack((train_set.targets, train_preds.argmax(dim=1)), dim=1)
+print(stacked.numpy()) 
+
+
+# initialize a confusion matrix with 0s
+confusion_matrix = torch.zeros(10, 10, dtype=torch.int32)
+print(confusion_matrix.numpy())
+
+# fill in the matrix
+for row in stacked:
+    true_label, pred_label = row.numpy()
+    confusion_matrix[true_label, pred_label] += 1
+
+print(confusion_matrix.numpy())
